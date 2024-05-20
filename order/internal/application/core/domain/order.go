@@ -1,6 +1,8 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type OrderItem struct {
 	ProductCode string  `json:"product_code"`
@@ -16,11 +18,21 @@ type Order struct {
 	CreatedAt  int64       `json:"created_at"`
 }
 
-func NewOrder(customerId int64, orderItems []OrderItem) Order{
+func NewOrder(customerId int64, orderItems []OrderItem) Order {
 	return Order{
 		CustomerID: customerId,
 		Status:     "Pending",
 		OrderItems: orderItems,
 		CreatedAt:  time.Now().Unix(),
 	}
+}
+
+func (o *Order) TotalPrice() float32 {
+	var totalPrice float32
+
+	for _, orderItem := range o.OrderItems {
+		totalPrice += orderItem.UnitPrice * float32(orderItem.Quantity)
+	}
+
+	return totalPrice
 }
